@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flyes&Cakes</title>
+    <link href="main.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<ul>
+    <li>Белое поле - пирог</li>
+    <li>Красное поле - отрава</li>
+    <li>Зелёное поле - муха</li>
+    <li>Серое поле - укушенный пирог</li>
+</ul>
+<table id="game_table"></table>
+</body>
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    var $game_table = $("#game_table");
+
+    $(document).ready(function(){
+
+        var poison = {x: 2, y: 95};
+
+        // Создаем таблицу c пирогами
+        for(var i = 0; i < 100; ++i){
+            var tr=$("<tr data-row="+i+"></tr>");
+            $game_table.append(tr);
+            for(var j = 0; j < 10; ++j){
+                if (i === 99){
+
+                    tr.append("<td data-cell="+j+" data-row="+i+" class='fly'></td>");
+
+                } else {
+
+                    // Если совпадает с координатами отравы - пометим
+                    if (i === poison.y && j === poison.x) {
+                        tr.append("<td class='poision' data-cell="+j+" data-row="+i+">&nbsp;</td>");
+                    } else {
+                        tr.append("<td data-cell="+j+" data-row="+i+">&nbsp;</td>");
+                    }
+                }
+
+            }
+
+        }
+
+        $('td').on('click', function () {
+            if ($(this).hasClass('fly')){
+                goUp(this);
+            }
+        });
+
+        // Шаг вверх
+        function goUp(fly)
+        {
+            var $fly = $(fly);
+            var currentCoord = {y: $fly.data('row'), x: $fly.data('cell')};
+
+            if ($game_table.find('tr[data-row="'+(currentCoord.y - 1) +'"]').length > 0){
+
+                $game_table.find('tr[data-row="'+currentCoord.y+'"]')
+                    .find('td[data-cell="'+currentCoord.x+'"]').addClass('checked-pie');
+                $game_table.find('tr[data-row="'+(currentCoord.y - 1) +'"]')
+                    .find('td[data-cell="'+currentCoord.x+'"]').addClass('fly');
+
+            }
+
+        }
+
+
+
+    });
+
+
+</script>
